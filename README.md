@@ -69,7 +69,7 @@ Module provides some output informations:
 - Configure shell with your AWS credentials
 
 ```bash
-# I your bashrc / zshrc
+# In your bashrc / zshrc
 # AWS credentials
 export AWS_ACCESS_KEY_ID="....."
 export AWS_SECRET_ACCESS_KEY="....."
@@ -94,7 +94,7 @@ variable "private_key_path" {
 }
 
 module "containerlab" {
-    source = "https://github.com/titom73/aws-containerlab-vm"
+    source = "git::https://github.com/titom73/aws-containerlab-vm.git//aws-containerlab-vm/"
     private_key_path    = var.private_key_path
     public_key_path     = var.public_key_path
 }
