@@ -33,6 +33,8 @@ ubuntu@ip-10-0-1-143:~$ git --version
 git version 2.25.1
 ```
 
+VM is accessible via port `ssh/22` for management and port `80/http` for graphite instance
+
 ### Inputs
 
 Module supports a set of inputs, most of them are optional, but 2 are mandatory
@@ -53,6 +55,14 @@ __Optional variables__
 - `ec2_user`: User configured in the VM for running preprovisioning. (default: `ubuntu`)
 
 All these options are described with their default values in the module file [`aws-containerlab-vm/variables.init.tf`](aws-containerlab-vm/variables.init.tf)
+
+### Outputs
+
+Module provides some output informations:
+
+- `aws-region`: Which region VM is running
+- `instance_public_ip`: Public IP address of the VM
+- `ssh_connection`: Command to run to connect to the VM using SSH
 
 ### Configure terraform
 
