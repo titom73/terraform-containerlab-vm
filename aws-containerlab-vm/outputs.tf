@@ -10,5 +10,5 @@ output "ssh_connection" {
 
 output "aws-region" {
   description = "Region where VM is running on"
-  value = "${var.availability_zone}"
+  value = var.availability_zone
 }

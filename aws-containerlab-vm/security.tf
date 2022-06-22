@@ -1,6 +1,6 @@
 # security group
 resource "aws_security_group" "ssh-allowed" {
-    vpc_id = "${aws_vpc.prod-vpc.id}"
+    vpc_id = aws_vpc.prod-vpc.id
     egress {
         from_port = 0
         to_port = 0
@@ -26,5 +26,5 @@ resource "aws_security_group" "ssh-allowed" {
 
 resource "aws_key_pair" "key-pair" {
     key_name = "${var.project}-key-pair"
-    public_key = "${file(var.public_key_path)}"
+    public_key = file(var.public_key_path)
 }
