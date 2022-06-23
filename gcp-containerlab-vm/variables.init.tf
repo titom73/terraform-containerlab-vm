@@ -31,7 +31,7 @@ variable "vm_name" {
   description   = "Name of the VM"
 }
 
-variable "machine_type" {
+variable "instance_type" {
   default       = "e2-standard-8"
   type          = string
   description   = "Type of VM to provision"

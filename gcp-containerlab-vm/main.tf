@@ -12,7 +12,7 @@ resource "random_id" "instance_id" {
 resource "google_compute_instance" "default" {
   # To support more than one VM per stack
   name              = "${var.vm_name}-${random_id.instance_id.hex}"
-  machine_type      = var.machine_type
+  instance_type      = var.instance_type
   zone              = var.gcp_az
   tags              = ["ssh", "http"]
 

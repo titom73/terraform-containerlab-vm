@@ -1,4 +1,4 @@
-# Containerlab in AWS
+# Containerlab in GCP
 
 ## Overview
 
@@ -39,62 +39,64 @@ Module supports a set of inputs, most of them are optional, but 2 are mandatory
 
 __Mandatory variables__
 
+- `gcp_auth_file`: Authentication file provided by Google Cloud Platform. (Good [documentation](https://linuxhint.com/terraform_google_cloud_platform/) to get it)
+- `gcp_project_id`: Your Goolge Project ID
 - `public_key_path`: (__Mandatory__) Path to the SSH public key to use for SSH connection to the VM.
 - `private_key_path`: (__Mandatory__) Path to the SSH private key to use provisioning the VM from your laptop.
 
 __Optional variables__
 
-- `project`: Name of the project (default: `Containerlab`)
-- `cidr_block`: IP range to use to configure VPC. (default: `10.0.0.0/16`)
-- `public_subnet` Subnet allocated in `cidr_block` and used to connect VM. (default: `10.1.0.0/24`)
-- `instance_type`: Size of the VM running Containerlab. (default: `t2.micro`)
-- `aws_region`: In which region to run the topology. (default: `us-east-1`)
-- `availability_zone`: Availability zone configured for the stack. (default: `us-east-1a`)
-- `ec2_user`: User configured in the VM for running preprovisioning. (default: `ubuntu`)
+- `gcp_region`: Region where the VM will be configured. (default: `europe-west-9`)
+- `gcp_az`: AZ where the VM will be configured. (default: `europe-west-9a`)
+- `instance_type`: Size of the VM running Containerlab. (default: `e2-standard-8`)
+- `vm_name`: Name of the VM and VPC to configure in GCP.
+- `network_subnet_cidr`: Subnet IP address to create in VPC.
 
-All these options are described with their default values in the module file [`aws-containerlab-vm/variables.init.tf`](aws-containerlab-vm/variables.init.tf)
+All these options are described with their default values in the module file [`gcp-containerlab-vm/variables.init.tf`](gcp-containerlab-vm/variables.init.tf)
 
 ### Outputs
 
 Module provides some output informations:
 
-- `aws-region`: Which region VM is running
+- `gcp_region`: Which region VM is running
 - `instance_public_ip`: Public IP address of the VM
 - `ssh_connection`: Command to run to connect to the VM using SSH
 
 ### Configure terraform
 
-- Configure shell with your AWS credentials
 
-```bash
-# In your bashrc / zshrc
-# AWS credentials
-export AWS_ACCESS_KEY_ID="....."
-export AWS_SECRET_ACCESS_KEY="....."
-export AWS_REGION="..."
-```
-
-You can find all the different approach to configure terraform and AWS [here](https://registry.terraform.io/providers/hashicorp/aws/latest/docs#environment-variables)
 
 - Call module in your own stack
 
 ```bash
 # Create terraform file
 tee -a main.tf <<EOF
+variable "gcp_project_id" {
+  type          = string
+  description   = "The project indicates the default GCP project all of your resources will be created in"
+}
+
+variable "gcp_auth_file" {
+  type          = string
+  description   = "GCP authentication file"
+}
+
 variable "public_key_path" {
   type        = string
-  description = "Path to public key to deploy in EC2 instance"
+  description = "Path to public key to deploy in GCP instance"
 }
 
 variable "private_key_path" {
   type        = string
-  description = "Path to private key to deploy in EC2 instance"
+  description = "Path to private key to use to connect to GCP instance"
 }
 
 module "containerlab" {
-    source = "git::https://github.com/titom73/aws-containerlab-vm.git//aws-containerlab-vm/"
-    private_key_path    = var.private_key_path
+    source = "git::https://github.com/titom73/gcp-containerlab-vm.git//gcp-containerlab-vm/"
+    gcp_auth_file        = var.gcp_auth_file
+    gcp_project_id      = var.gcp_project_id
     public_key_path     = var.public_key_path
+    private_key_path     = var.private_key_path
 }
 EOF
 ```
@@ -104,19 +106,19 @@ EOF
 ```bash
 # Create output
 tee -a outputs.tf <<EOF
-output "aws-region" {
-  description = "Region where VM is running on"
-  value = "${module.containerlab.aws-region}"
+output "instance_public_ip" {
+  description = "Public IP of GCP instance"
+  value       = module.webserver.instance_public_ip
 }
 
-output "instance_public_ip" {
-  description = "Public IP of EC2 instance"
-  value       = "${module.containerlab.instance_public_ip}"
+output "gcp_region" {
+  description = "Region where VM is running on"
+  value = var.gcp_az
 }
 
 output "ssh_connection" {
   description = "Connection information"
-  value = "${module.containerlab.ssh_connection}"
+  value = "${module.webserver.ssh_connection}"
 }
 EOF
 ```
@@ -126,8 +128,10 @@ EOF
 ```bash
 # Create tfvars
 tee -a terraform.tfvars <<EOF
-public_key_path=~/.ssh/id_rsa.pub
-private_key_path=~/.ssh/id_rsa
+gcp_auth_file         = "~/.zshrc-inetsix/gcloud-inetsix-arista.json"
+gcp_project_id       = "inetsix"
+public_key_path      = "~/.ssh/id-tom-aws.pub"
+private_key_path     = "~/.ssh/id-tom-aws"
 EOF
 ```
 
@@ -144,18 +148,15 @@ $ terraform plan
 
 # Build and deploy
 $ terraform deploy
+
 [...]
-module.webserver.aws_key_pair.key-pair: Creating...
-module.webserver.aws_vpc.prod-vpc: Creating...
-module.webserver.aws_key_pair.key-pair: Creation complete after 0s [id=containerlab-demo-key-pair]
-[...]
-Apply complete! Resources: 8 added, 0 changed, 0 destroyed.
+Apply complete! Resources: 6 added, 0 changed, 0 destroyed.
 
 Outputs:
 
-aws-region = "eu-west-3a"
-instance_public_ip = "13.38.11.81"
-ssh_connection = "ssh ubuntu@13.38.11.81 -i ~/.ssh/id_rsa"
+gcp_region = "europe-west9-a"
+instance_public_ip = "34.155.52.184"
+ssh_connection = "ssh ubuntu@34.155.52.184 -i ~/.ssh/id-tom-aws"
 ```
 
 > Don't forget to destroy after your tests: `terraform destroy`

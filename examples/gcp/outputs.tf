@@ -1,5 +1,5 @@
 output "instance_public_ip" {
-  description = "Public IP of EC2 instance"
+  description = "Public IP of GCP instance"
   value       = module.webserver.instance_public_ip
 }
 
