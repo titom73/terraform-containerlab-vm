@@ -6,18 +6,18 @@ resource "aws_vpc" "prod-vpc" {
     instance_tenancy = "default"
 
     tags = {
-        Name = var.project
+        Name = var.vm_name
     }
 }
 
 resource "aws_subnet" "prod-subnet-public-1" {
     vpc_id = aws_vpc.prod-vpc.id
-    cidr_block = var.public_subnet
+    cidr_block = var.network_subnet_cidr
     map_public_ip_on_launch = "true" //it makes this a public subnet
     availability_zone = var.availability_zone
 
     tags = {
-        Name = "subnet-for-${var.project}"
+        Name = "subnet-for-${var.vm_name}"
     }
 }
 
@@ -27,7 +27,7 @@ resource "aws_internet_gateway" "prod-igw" {
     vpc_id = aws_vpc.prod-vpc.id
 
     tags = {
-        Name = "${var.project}-igw"
+        Name = "${var.vm_name}-igw"
     }
 }
 
@@ -41,7 +41,7 @@ resource "aws_route_table" "prod-public-crt" {
     }
 
     tags = {
-        Name = "${var.project}-public-crt"
+        Name = "${var.vm_name}-public-crt"
     }
 }
 

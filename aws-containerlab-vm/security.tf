@@ -20,11 +20,11 @@ resource "aws_security_group" "ssh-allowed" {
         cidr_blocks = ["0.0.0.0/0"]
     }
     tags = {
-        Name = "${var.project}-allowed"
+        Name = "${var.vm_name}-allowed"
     }
 }
 
 resource "aws_key_pair" "key-pair" {
-    key_name = "${var.project}-key-pair"
+    key_name = "${var.vm_name}-key-pair"
     public_key = file(var.public_key_path)
 }

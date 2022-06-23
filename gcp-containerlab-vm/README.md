@@ -92,7 +92,7 @@ variable "private_key_path" {
 }
 
 module "containerlab" {
-    source = "git::https://github.com/titom73/gcp-containerlab-vm.git//gcp-containerlab-vm/"
+    source = "git::https://github.com/titom73/terraform-containerlab-vm.git//gcp-containerlab-vm/"
     gcp_auth_file        = var.gcp_auth_file
     gcp_project_id      = var.gcp_project_id
     public_key_path     = var.public_key_path

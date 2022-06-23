@@ -46,11 +46,11 @@ __Optional variables__
 
 - `project`: Name of the project (default: `Containerlab`)
 - `cidr_block`: IP range to use to configure VPC. (default: `10.0.0.0/16`)
-- `public_subnet` Subnet allocated in `cidr_block` and used to connect VM. (default: `10.1.0.0/24`)
+- `network_subnet_cidr` Subnet allocated in `cidr_block` and used to connect VM. (default: `10.1.0.0/24`)
 - `instance_type`: Size of the VM running Containerlab. (default: `t2.micro`)
 - `aws_region`: In which region to run the topology. (default: `us-east-1`)
 - `availability_zone`: Availability zone configured for the stack. (default: `us-east-1a`)
-- `ec2_user`: User configured in the VM for running preprovisioning. (default: `ubuntu`)
+- `username`: User configured in the VM for running preprovisioning. (default: `ubuntu`)
 
 All these options are described with their default values in the module file [`aws-containerlab-vm/variables.init.tf`](aws-containerlab-vm/variables.init.tf)
 
@@ -58,7 +58,7 @@ All these options are described with their default values in the module file [`a
 
 Module provides some output informations:
 
-- `aws-region`: Which region VM is running
+- `aws_region`: Which region VM is running
 - `instance_public_ip`: Public IP address of the VM
 - `ssh_connection`: Command to run to connect to the VM using SSH
 
@@ -92,7 +92,7 @@ variable "private_key_path" {
 }
 
 module "containerlab" {
-    source = "git::https://github.com/titom73/aws-containerlab-vm.git//aws-containerlab-vm/"
+    source = "git::https://github.com/titom73/terraform-containerlab-vm.git//aws-containerlab-vm/"
     private_key_path    = var.private_key_path
     public_key_path     = var.public_key_path
 }

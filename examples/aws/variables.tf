@@ -1,6 +1,6 @@
-variable "project" {
+variable "vm_name" {
   type        = string
-  description = "Name of project"
+  description = "Name of VM"
 }
 
 variable "instance_type" {

@@ -6,5 +6,5 @@ module "webserver" {
     aws_region          = var.aws_region
     availability_zone   = var.availability_zone
     instance_type       = var.instance_type
-    project             = var.project
+    vm_name             = var.vm_name
 }

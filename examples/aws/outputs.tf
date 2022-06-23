@@ -8,7 +8,7 @@ output "ssh_connection" {
   value = "${module.webserver.ssh_connection}"
 }
 
-output "aws-region" {
+output "aws_region" {
   description = "Region where VM is running on"
-  value = "${module.webserver.aws-region}"
+  value = "${module.webserver.aws_region}"
 }

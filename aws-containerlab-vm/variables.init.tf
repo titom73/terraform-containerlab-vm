@@ -1,4 +1,4 @@
-variable "project" {
+variable "vm_name" {
   default     = "Containerlab"
   type        = string
   description = "Name of project"
@@ -10,7 +10,7 @@ variable "cidr_block" {
   description = "CIDR block for the VPC"
 }
 
-variable "public_subnet" {
+variable "network_subnet_cidr" {
   default     = "10.1.0.0/24"
   type        = string
   description = "Public subnet CIDR blocks"
@@ -44,7 +44,7 @@ variable "private_key_path" {
   description = "Path to private key to deploy in EC2 instance"
 }
 
-variable "ec2_user" {
+variable "username" {
   default     = "ubuntu"
   type        = string
   description = "EC2 user"

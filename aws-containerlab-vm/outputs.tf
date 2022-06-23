@@ -8,7 +8,7 @@ output "ssh_connection" {
   value = "ssh ubuntu@${aws_instance.web1.public_ip} -i ${var.private_key_path}"
 }
 
-output "aws-region" {
+output "aws_region" {
   description = "Region where VM is running on"
   value = var.availability_zone
 }
