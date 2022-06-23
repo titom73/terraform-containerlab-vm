@@ -1,5 +1,5 @@
 module "webserver" {
-    source = "../aws-containerlab-vm"
+    source = "../../aws-containerlab-vm"
 
     private_key_path    = var.private_key_path
     public_key_path     = var.public_key_path

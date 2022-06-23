@@ -1,8 +1,6 @@
-# Containerlab in AWS
+# Containerlab in Cloud
 
-## Containerlab in AWS
-
-Module path: [aws-containerlab-vm](aws-containerlab-vm/)
+Ths repository provides Terraform modules to create a preprovisioned VM with docker, git and Containerlab in different cloud providers
 
 This VM is an Ubuntu 20.04 and comes with following tools:
 
@@ -35,132 +33,36 @@ git version 2.25.1
 
 VM is accessible via port `ssh/22` for management and port `80/http` for graphite instance
 
-### Inputs
+## Supported Clouds
 
-Module supports a set of inputs, most of them are optional, but 2 are mandatory
+- Amazon AWS with EC2 instance: [aws-containerlab-vm](aws-containerlab-vm/)
+- Google Cloud Platform with Compute Instance [gcp-containerlab-vm](gcp-containerlab-vm/)
 
-__Mandatory variables__
+## Getting Started
 
-- `public_key_path`: (__Mandatory__) Path to the SSH public key to use for SSH connection to the VM.
-- `private_key_path`: (__Mandatory__) Path to the SSH private key to use provisioning the VM from your laptop.
-
-__Optional variables__
-
-- `project`: Name of the project (default: `Containerlab`)
-- `cidr_block`: IP range to use to configure VPC. (default: `10.0.0.0/16`)
-- `public_subnet` Subnet allocated in `cidr_block` and used to connect VM. (default: `10.1.0.0/24`)
-- `instance_type`: Size of the VM running Containerlab. (default: `t2.micro`)
-- `aws_region`: In which region to run the topology. (default: `us-east-1`)
-- `availability_zone`: Availability zone configured for the stack. (default: `us-east-1a`)
-- `ec2_user`: User configured in the VM for running preprovisioning. (default: `ubuntu`)
-
-All these options are described with their default values in the module file [`aws-containerlab-vm/variables.init.tf`](aws-containerlab-vm/variables.init.tf)
-
-### Outputs
-
-Module provides some output informations:
-
-- `aws-region`: Which region VM is running
-- `instance_public_ip`: Public IP address of the VM
-- `ssh_connection`: Command to run to connect to the VM using SSH
-
-### Configure terraform
-
-- Configure shell with your AWS credentials
+Go to the folder for your Cloud provider, update `tfvars` file with your own information and run terraform
 
 ```bash
-# In your bashrc / zshrc
-# AWS credentials
-export AWS_ACCESS_KEY_ID="....."
-export AWS_SECRET_ACCESS_KEY="....."
-export AWS_REGION="..."
+# Move to cloud folder
+cd examples/aws/
+
+# Update vars accordingly
+vim terraform.tfvars
+
+# Init Terraform
+terraform init
+
+# Plan your deployment
+terraform plan
+
+# Deploy your stack
+terraform deploy
+
+# After your lab is finished, destroy
+terraform destroy
 ```
 
-You can find all the different approach to configure terraform and AWS [here](https://registry.terraform.io/providers/hashicorp/aws/latest/docs#environment-variables)
-
-- Call module in your own stack
-
-```bash
-# Create terraform file
-tee -a main.tf <<EOF
-variable "public_key_path" {
-  type        = string
-  description = "Path to public key to deploy in EC2 instance"
-}
-
-variable "private_key_path" {
-  type        = string
-  description = "Path to private key to deploy in EC2 instance"
-}
-
-module "containerlab" {
-    source = "git::https://github.com/titom73/aws-containerlab-vm.git//aws-containerlab-vm/"
-    private_key_path    = var.private_key_path
-    public_key_path     = var.public_key_path
-}
-EOF
-```
-
-- Generate terraform outputs (optional):
-
-```bash
-# Create output
-tee -a outputs.tf <<EOF
-output "aws-region" {
-  description = "Region where VM is running on"
-  value = "${module.containerlab.aws-region}"
-}
-
-output "instance_public_ip" {
-  description = "Public IP of EC2 instance"
-  value       = "${module.containerlab.instance_public_ip}"
-}
-
-output "ssh_connection" {
-  description = "Connection information"
-  value = "${module.containerlab.ssh_connection}"
-}
-EOF
-```
-
-- Create your own variables:
-
-```bash
-# Create tfvars
-tee -a terraform.tfvars <<EOF
-public_key_path=~/.ssh/id_rsa.pub
-private_key_path=~/.ssh/id_rsa
-EOF
-```
-
-> Be sure to edit tfvars file to hit your setup.
-
-### Execute terraform
-
-```bash
-# Init terraform for the first time
-$ terraform init
-
-# Plan for the first run only
-$ terraform plan
-
-# Build and deploy
-$ terraform deploy
-[...]
-module.webserver.aws_key_pair.key-pair: Creating...
-module.webserver.aws_vpc.prod-vpc: Creating...
-module.webserver.aws_key_pair.key-pair: Creation complete after 0s [id=containerlab-demo-key-pair]
-[...]
-Apply complete! Resources: 8 added, 0 changed, 0 destroyed.
-
-Outputs:
-
-aws-region = "eu-west-3a"
-instance_public_ip = "13.38.11.81"
-ssh_connection = "ssh ubuntu@13.38.11.81 -i ~/.ssh/id_rsa"
-```
-
-> Don't forget to destroy after your tests: `terraform destroy`
+> This getting started is only for testing and in case you want to use these modules, it is recommended to use module references as described in the [terraform documentation](https://www.terraform.io/language/modules).
 
 ## License
 
