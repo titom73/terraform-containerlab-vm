@@ -12,7 +12,7 @@ resource "random_id" "instance_id" {
 resource "google_compute_instance" "default" {
   # To support more than one VM per stack
   name              = "${var.vm_name}-${random_id.instance_id.hex}"
-  instance_type      = var.instance_type
+  machine_type      = var.instance_type
   zone              = var.gcp_az
   tags              = ["ssh", "http"]
 
@@ -33,7 +33,7 @@ resource "google_compute_instance" "default" {
   }
 
   provisioner "remote-exec" {
-    script          = "${path.module}/provision-ubuntu.sh"
+    script          = "${path.module}/../scripts/provision-ubuntu.sh"
 
     connection {
       type          = "ssh"
